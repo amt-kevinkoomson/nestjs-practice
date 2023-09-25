@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Priority {
+  HIGH
+  LOW
+  URGENT
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  firstname String
+  lastname  String?
+  email     String     @unique
+  password  String
+  isActive  Boolean    @default(false)
+  todoList  TodoItem[]
+  isAdmin   Boolean    @default(false)
+}
+
+model TodoItem {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  dueDate     DateTime?
+  priority    Priority
+  completed   Boolean   @default(false)
+  User        User?     @relation(fields: [userId], references: [id])
+  userId      Int?
+}
